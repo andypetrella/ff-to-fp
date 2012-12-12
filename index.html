@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>ff to fp</title>
+
+		<meta name="description" content="An overview of FP using Scala and the Typesafe stack.">
+		<meta name="author" content="Andy Petrella  (http://nextlab.be)">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+		    <section>
+		        <h1>ff to fp</h1>
+		        <p>Starring</p>
+		        <h2><img width="100px" style="margin:0px 15px; vertical-align: middle;" src="imgs/scala.png">Scala</h2>
+		        <h2>AKKA 2<img width="100px" style="margin:0px 15px; vertical-align: middle;" src="imgs/akka.png"></h2>
+		        <h2><img width="100px" style="margin:0px 15px; vertical-align: middle;" src="imgs/play.png">Play! Framework 2</h2>
+		    </section>
+			  <section>
+			    <section>
+            <h2>FP using Scala</h2>
+            <div style="text-align: center;">
+                <ul>
+                    <li>
+                        <span style="text-align: center; ">What is FP?</span>
+                        <br>
+                    </li>
+                    <li>
+                        <span style="text-align: center; ">Scala =?= FP</span>
+                    </li>
+                    <li>
+                        <span style="text-align: center; ">In action...</span>
+                    </li>
+                </ul>
+            </div>
+          </section>
+          <section>
+          	<h2>What is FP?</h2>
+          	<h3>
+          		Function == First Class Citizens
+          	</h3>
+          </section>
+          <section>
+          	<h4>
+          		What is a Function?
+          	</h4>
+          	<div style="width: 600px; margin: auto">
+          		<div style="float:left;">
+	          		<table>
+	          			<tr><td></td><td></td><td style="text-align:center">x</td></tr>
+	          			<tr><td>div(x, y)</td><td>=</td><td><hr></td></tr>
+	          			<tr><td></td><td></td><td style="text-align:center">y</td></tr>
+	          		</table>
+          		</div>
+          		<div style="margin-left: 300px">
+          		<table>
+          			<tr><td></td><td></td><td style="text-align:center">e<sup>ix</sup> + e<sup>-ix</sup></td></tr>
+          			<tr><td>cos(x)</td><td>=</td><td><hr></td></tr>
+          			<tr><td></td><td></td><td style="text-align:center">2</td></tr>
+          		</table>
+          		</div>
+          	</div>
+          	<div>
+          		<p class="fragment shrink">
+          			Takes <strong>same</strong> Inputs. Produces <strong>same</strong> Outputs.
+          		</p>
+          		<p class="fragment shrink">
+          			No State change. No Exceptions
+          		</p>
+              <p class="fragment shrink">
+                Define <strong>behavior</strong> not tasks! Enables true <strong>composability</strong>.
+              </p>
+              <p class="fragment fade-in highlight-blue">
+                <strong>No Side-Effects</strong> == <strong>Referential Transparency</strong>
+              </p>
+
+              <aside class="notes">
+                  <p>That's where we differ from what is called imperative programming.</p>
+                  <p>We define a behavior.</p>
+                  <p>Introduce Immutability. </p>
+                  <p>No Side-effects => no IO as well. But there exist functional construction that enables a functional program to enclose imperative programming.</p>
+              </aside>
+          	</div>
+          </section>
+          <section>
+          	<h4>
+          		What is a First Class Citizen?
+          	</h4>
+		        <p>
+              A function is a <strong>tool</strong> like a structure or a primitive might be.
+            </p>
+            <p>
+              They encourage reuse and sharing. Thanks to their <strong>composability</strong>.
+            </p>
+            <p>
+              The simplest composition being the classical <code>f o g</code>.
+            </p>
+            <p>
+              But there are plenty of others... of course.
+            </p>
+			    </section>
+			    <section>
+		        <h2>Scala =?= FP</h2>
+		        <div><strong>Yes</strong> but mmmh...</div>
+            <ul style="list-style: none;">
+  		        <li class="fragment roll-in"> &gt; OO kept!</li>
+  		        <li class="fragment roll-in"> &gt; Best of both worlds</li>
+  		        <li class="fragment roll-in"> &gt; Imperative permitted</li>
+            </ul>
+            <aside class="notes">
+  		        <div>Added values...&nbsp;</div>
+  		        <div>Type System</div>
+  		        <div>Syntax</div>
+  		        <div>Language Features &nbsp;like implicits - traits/mixins - pattern matching - copy!</div>
+            </aside>
+			    </section>
+			    <section>
+		        <h2>Some examples?</h2>
+		        <div>Alt+Tab and code!</div>
+			    </section>
+			  </section>
+	      <section>
+	      	<section>
+		      	<h2>Distributed et al. w/ Akka</h2>
+		      	<div>Messages</div>
+            <div>Actors</div>
+            <div>Mailbox</div>
+            <div>Fault-Tolerant</div>
+	    		</section>
+          <section>
+            <h3>Messages</h3>
+            <p><strike>Sharing resource</strike></p>
+            <p><strike>Synchronous</strike></p>
+            <p>Message Passing Style to the rescue</p>
+            <p>Don't call, but send asynchronously</p>
+          </section>
+          <section>
+            <h3>Actors</h3>
+            <p>Worker/Sender</p>
+            <p>React to message, Create message</p>
+            <p>Hold a state</p>
+          </section>
+          <section>
+            <h3>Mailbox</h3>
+            <p>Queue of messages</p>
+            <p>Invoke dedicated actor when computing unit available</p>
+          </section>
+          <section>
+            <h3>Fault Tolerant</h3>
+            <p>Actors hidden by reference</p>
+            <p>Actors created hierarchically</p>
+            <p>Onion layers of supervision => restart, stop, bubble, ...</p>
+          </section>
+          <section>
+            <h2>Code in peace</h2>
+            <div>Back to the wild</div>
+          </section>
+	      </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '/socket.io/socket.io.js', async: true },
+          { src: 'plugin/notes-server/client.js', async: true }
+
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

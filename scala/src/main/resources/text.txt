@@ -1,0 +1,23 @@
+Distributed et al. w/ Akka
+Messages
+Actors
+Mailbox
+Fault-Tolerant
+Messages
+Sharing resource
+Synchronous
+Message Passing Style to the rescue
+Don't call, but send asynchronously
+Actors
+Worker/Sender
+React to message, Create message
+Hold a state
+Mailbox
+Queue of messages
+Invoke dedicated actor when computing unit available
+Fault Tolerant
+Actors hidden by reference
+Actors created hierarchically
+Onion layers of supervision => restart, stop, bubble,
+Code in peace
+Back to the wild
