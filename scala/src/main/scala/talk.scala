@@ -48,7 +48,7 @@ object talk extends App {
   }
 
   trait Paradigm {
-    val rules:Set[String]
+    //def rules:Set[String]
   }
   trait Functional extends Paradigm {
     //def ....

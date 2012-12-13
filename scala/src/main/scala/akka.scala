@@ -3,7 +3,7 @@ package be.nextlarexo
 object showAkka extends App {
   import akka.actor._
   import akka.util.duration._
-  import akka.actor.SupervisorStrategy.Restart
+  import akka.actor.SupervisorStrategy._
   import com.typesafe.config._
   import scala.io._
   import java.io.{File, FileWriter}
@@ -17,11 +17,11 @@ object showAkka extends App {
   val system = ActorSystem("MySystem", config)
 
   //and actor ref
-  val reader:ActorRef = system.actorOf(Props[Reader], "reader")
+  val convertor:ActorRef = system.actorOf(Props[Convertor], "convertor")
 
 
-  //reader actor
-  class Reader extends Actor {
+  //convertor actor
+  class Convertor extends Actor {
 
     val output = {
       val o = File.createTempFile("akka", ".out")
@@ -33,11 +33,6 @@ object showAkka extends App {
     var adapted = 0
 
     var errors = 0
-
-    override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = -1) {
-      case r: MyException[_] => Restart
-      case d: RuntimeException => Restart
-    }
 
     def receive = {
       case ReadFile(f:File) => {
@@ -58,13 +53,22 @@ object showAkka extends App {
         self ! PoisonPill
       }
 
-      case Error => errors += 1
+      case Error => {
+        errors += 1
+        sender ! PoisonPill
+      }
 
       case Errors => sender ! errors
 
       case Count => sender ! adapted
 
     }
+
+    override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = -1) {
+      case r: MyException[_] => Restart
+      case d: RuntimeException => Restart
+    }
+
   }
 
 
@@ -115,7 +119,7 @@ object showAkka extends App {
 
 
   //ask to process
-  reader ! ReadFile(new File(args(0)))
+  convertor ! ReadFile(new File(args(0)))
 
 
 
@@ -126,7 +130,7 @@ object showAkka extends App {
   implicit val timeout = Timeout(5 seconds)
   (1 to 100) foreach { _ =>
     if (!system.isTerminated) {
-      (reader ? Count) onComplete println
+      (convertor ? Count) onComplete println
       Thread.sleep(1)
     }
   }
@@ -134,9 +138,9 @@ object showAkka extends App {
 
   //termination
   println("Every thing should be ok...")
-  (reader ? Count) onComplete println
-  (reader ? Errors) onComplete println
-  reader ! Done
+  (convertor ? Count) onComplete println
+  (convertor ? Errors) onComplete println
+  convertor ! Done
 
 
   //stop
