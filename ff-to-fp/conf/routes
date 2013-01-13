@@ -5,6 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET     /users                      controllers.Application.users
+GET     /user/byfirstname           controllers.Application.byFirstName
+GET     /user/:id                   controllers.Application.user(id:String)
+
 GET     /talk                       controllers.Talk.enter
 GET     /async                      controllers.Talk.async
 GET     /stress                     controllers.Talk.stress

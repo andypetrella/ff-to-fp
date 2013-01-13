@@ -89,7 +89,7 @@
           			Takes <strong>same</strong> Inputs. Produces <strong>same</strong> Outputs.
           		</p>
           		<p class="fragment shrink">
-          			No State change. No Exceptions
+          			No State change (Immutability). No Exceptions
           		</p>
               <p class="fragment shrink">
                 Define <strong>behavior</strong> not tasks! Enables true <strong>composability</strong>.
@@ -138,8 +138,123 @@
   		        <div>Language Features &nbsp;like implicits - traits/mixins - pattern matching - copy!</div>
             </aside>
 			    </section>
+          <section>
+            <h2>Immutability</h2>
+              <pre><code contenteditable class="scala">case class User(
+  firstName:String,
+  lastName:String,
+  age:Int
+)</code></pre>
+            <pre contenteditable class="fragment roll-in"><code>val noootsab = User("andy", "petrella", 31)
+
+noootsab.firstName = "noah" // BANG !
+
+val noah = noootsab.copy(firstName = "Noah", age = 2)</code></pre>
+          </section>
+          <section>
+            <h2>No Exceptions: Option</h2>
+            <pre><code contenteditable class="scala">trait Util {
+  def parseInt(s:String): Int
+}
+
+val i:Int = Util.parseInt("a") // What do you expect?</code></pre>
+            </span>
+            <pre class="fragment roll-in"><code contenteditable class="scala">trait Util {
+  def parseInt(s:String): Option[Int]
+}
+
+val i:Option[Int] = Util.parseInt("a") // == None  ==> But WHY?
+val one           = Util.parseInt("1") // == Some(1)  ... Hey where's the type?</code></pre>
+          </section>
+          <section>
+            <h2>Exceptions. But...</h2>
+              <pre><code contenteditable class="scala">trait Util {
+  def parseInt(s:String): Either[Exception, Int]
+}
+
+val i    = Util.parseInt("a") //Left(NumberFormatException("..."))
+val one  = Util.parseInt("1") //Rigth(1)</code></pre>
+          </section>
+          <section>
+            <h2>Use the values: Mapper</h2>
+            <pre><code contenteditable class="scala">val ageOpt:Option[Int] = Util.parseInt(request.get("age"))
+val userOpt = ageOpt.map( (age:Int) => User("some", "One", age) )</code></pre>
+            <pre class="fragment roll-in"><code contenteditable class="scala">//map use the embed value... let's see with List
+val nooostab = User("andy", "petrella", 31)
+val noah     = User("noah", "petrella", 2)
+
+val users:List[User] = List(nooostab, noah)
+
+val ages:List[Int]   = user.map( (u:User) => u.age )
+val agesSimpler      = user.map( u => u.age )
+val agesEvenSimple   = user.map(_.age)</code></pre>
+          </section>
+          <section>
+            <h2>Composability: FlatMapper</h2>
+            <pre><code contenteditable class="scala">trait Request {
+  def get(key:String):Option[String]
+}
+val ageValue:Option[String]  = request.get("age")
+val _ageOpt:Option[Int]      = Util.parseInt(ageValue)
+// BANG !
+
+val __ageOpt:Option[Int]     = ageValue.map( Util.parseInt(_) )
+// BANG !!!
+
+val age:Option[Int]          = ageValue.flatMap( Util.parseInt(_) )
+//Good, didjû</code></pre>
+          </section>
+          <section>
+            <h2>Add Control: Filter</h2>
+            <pre><code contenteditable class="scala">val ageValue:Option[String]  = Request.get("age")
+val ageOpt:Option[Int]       = ageValue.flatMap( Util.parseInt(_) )
+
+val allowed  = ageOpt.filter(_ >= 18)
+
+val noah     = allowed.map(User("noah", "petrella", _)) //None
+val noootsab = allowed.map(User("andy", "petrella", _)) //Some</code></pre>
+          </section>
+          <section>
+            <h2>Putting the pieces together</h2>
+            <pre><code contenteditable class="scala">def getAllowedUser(request:Request):Option[User] = {
+  val firstNameOpt:Option[String] = request.get("firstName")
+  val lastNameOpt:Option[String]  = request.get("lastName")
+  val ageOpt:Option[Int]          = request.get("age").flatMap(Util.parseInt(_))
+  val allowedAgeOpt:Option[Int]   = ageOpt.filter(_ >= 18)
+
+  firstNameOpt.flatMap { firstName =>
+    lastNameOpt.flatMap { lastName =>
+      allowedAgeOpt.map { allowedAge =>
+        User(firstName, lastName, allowedAge)
+      }
+    }
+  }
+}</code></pre>
+          </section>
+          <section>
+            <h2>For Comprehension</h2>
+            <pre><code contenteditable class="scala">def getUser(checkAge:Int=>Boolean)(request:Request) =
+  for {
+    firstName <- request.get("firstName")
+    lastName  <- request.get("lastName")
+    ageString <- request.get("age")
+    age       <- Util.parseInt(ageString) if checkAge(age)
+  } yield User(firstName, lastName, age)</code></pre>
+            <pre class="fragment roll-in"><code contenteditable class="scala">type Request = Map[String, String]
+
+val allowedForDora : Int => Boolean            = (_:Int) >= 2
+val getAllowedUser : Request => Option[User]   = getUser(allowedForDora) _
+
+val noah     = getAllowedUser(
+                  Map(
+                    "firstName"->"noah",
+                    "lastName"->"petrella",
+                    "age"->"2"
+                  )
+                )</code></pre>
+          </section>
 			    <section>
-		        <h2>Some examples?</h2>
+		        <h2>Get real?</h2>
 		        <div>Alt+Tab and code!</div>
 			    </section>
 			  </section>
