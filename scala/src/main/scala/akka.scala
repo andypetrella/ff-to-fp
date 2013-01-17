@@ -1,4 +1,4 @@
-package be.nextlarexo
+package be.wajug
 
 object showAkka extends App {
   import akka.actor._
@@ -10,14 +10,6 @@ object showAkka extends App {
 
   //custom exception
   case class MyException[A](initialValue:A) extends Exception
-
-
-  //config
-  val config = ConfigFactory.load()
-  val system = ActorSystem("MySystem", config)
-
-  //and actor ref
-  val convertor:ActorRef = system.actorOf(Props[Convertor], "convertor")
 
 
   //convertor actor
@@ -118,8 +110,19 @@ object showAkka extends App {
 
 
 
+  // GO !
+
+  //config
+  val config = ConfigFactory.load()
+  val system = ActorSystem("MySystem", config)
+
+  //and actor ref
+  val convertor:ActorRef = system.actorOf(Props[Convertor], "convertor")
+
+
   //ask to process
-  convertor ! ReadFile(new File(args(0)))
+  val file = args.toList.headOption getOrElse ("/home/noootsab/src/talks/FF-to-FP/scala/src/main/resources/text.txt")
+  convertor ! ReadFile(new File(file))
 
 
 
@@ -128,6 +131,7 @@ object showAkka extends App {
   import akka.util.Timeout
   import akka.pattern.ask
   implicit val timeout = Timeout(5 seconds)
+  //Could use Akka schedule for that
   (1 to 100) foreach { _ =>
     if (!system.isTerminated) {
       (convertor ? Count) onComplete println

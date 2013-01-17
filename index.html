@@ -185,29 +185,29 @@ val noah     = User("noah", "petrella", 2)
 
 val users:List[User] = List(nooostab, noah)
 
-val ages:List[Int]   = user.map( (u:User) => u.age )
-val agesSimpler      = user.map( u => u.age )
-val agesEvenSimple   = user.map(_.age)</code></pre>
+val ages:List[Int]   = users.map( (u:User) => u.age )
+val agesSimpler      = users.map( u => u.age )
+val agesEvenSimple   = users.map(_.age)</code></pre>
           </section>
           <section>
             <h2>Composability: FlatMapper</h2>
             <pre><code contenteditable class="scala">trait Request {
   def get(key:String):Option[String]
 }
-val ageValue:Option[String]  = request.get("age")
-val _ageOpt:Option[Int]      = Util.parseInt(ageValue)
+val ageValue:Option[String]       = request.get("age")
+val ageOpt:Option[Int]            = Util.parseInt(ageValue)
 // BANG !
 
-val __ageOpt:Option[Int]     = ageValue.map( Util.parseInt(_) )
+val ageOptOpt:Option[Option[Int]] = ageValue.map(Util.parseInt(_))
 // BANG !!!
 
-val age:Option[Int]          = ageValue.flatMap( Util.parseInt(_) )
+val age:Option[Int]               = ageValue.flatMap(Util.parseInt(_))
 //Good, didjû</code></pre>
           </section>
           <section>
             <h2>Add Control: Filter</h2>
-            <pre><code contenteditable class="scala">val ageValue:Option[String]  = Request.get("age")
-val ageOpt:Option[Int]       = ageValue.flatMap( Util.parseInt(_) )
+            <pre><code contenteditable class="scala">val ageValue:Option[String]  = request.get("age")
+val ageOpt:Option[Int]       = ageValue.flatMap(Util.parseInt(_))
 
 val allowed  = ageOpt.filter(_ >= 18)
 
@@ -272,12 +272,14 @@ val noah     = getAllowedUser(
             <p><strike>Synchronous</strike></p>
             <p>Message Passing Style to the rescue</p>
             <p>Don't call, but send asynchronously</p>
+            <p>Immutable</p>
           </section>
           <section>
             <h3>Actors</h3>
             <p>Worker/Sender</p>
             <p>React to message, Create message</p>
             <p>Hold a state</p>
+            <p>Mutable</p>
           </section>
           <section>
             <h3>Mailbox</h3>
@@ -333,14 +335,14 @@ val noah     = getAllowedUser(
           <h2>(for not leaving)</h2>
           <ul>
             <li>chipchip: @noootsab</li>
-            <li>+: andy.petrella</li>
+            <li>G+: andy.petrella</li>
             <li><strike>social</strike> coding: github / andypetrella</li>
             <li>FB: RIP</li>
-            <li>Blog (TBC): <a href="http://ska-la.blogspot.be">ska-la.blogspot.be</a></li>
+            <li>Blog (TBC): <a href="http://ska-la.blogspot.be">http://ska-la.blogspot.be</a></li>
             <li>Company: <a href="http://nextlab.be">NextLab</a></li>
           </ul>
           <hr/>
-          <div>Come @wajug!</div>
+          <div>Come Back! @WAJUG</div>
         </section>
 			</div>
 		</div>

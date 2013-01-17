@@ -1,4 +1,4 @@
-package be.nextlarexo
+package be.wajug
 
 object talk extends App {
 
